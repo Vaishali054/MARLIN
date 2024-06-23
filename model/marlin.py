@@ -335,6 +335,11 @@ class Marlin(LightningModule):
         )
 
         return [g_optimizer, d_optimizer], [g_lr_scheduler, d_lr_scheduler]
+    
+    def lr_scheduler_step(self, scheduler, optimizer_idx, epoch, metrics=None):
+        # Override to do custom logic
+        if isinstance(scheduler['scheduler'], LambdaLR):
+            scheduler['scheduler'].step()
 
     def log_image(self, name: str, image: torch.Tensor) -> None:
         """Log an image to the logger"""
