@@ -82,11 +82,26 @@ def check_exists(output_path: str):
     return os.path.exists(output_path)
 
 
-def process_images(image_path: str, output_path: str):
+def process_images(image_path: str, output_path: str, checkpoint_path: str = "checkpoint.txt"):
     Path(output_path).mkdir(parents=True, exist_ok=True)
+    
+    # Load checkpoint if it exists
+    if os.path.exists(checkpoint_path):
+        with open(checkpoint_path, 'r') as f:
+            processed_files = set(f.read().splitlines())
+    else:
+        processed_files = set()
+    
     files = glob.glob(f"{image_path}/*/*/*.jpg")
-
-    for i, file in enumerate(tqdm(files)):
-        save_path = file.replace(image_path, output_path).replace(".jpg", ".npy")
-        Path("/".join(save_path.split("/")[:-1])).mkdir(parents=True, exist_ok=True)
-        parse_face_img(file, save_path)
+    print(f"{image_path}/*/*/*.jpg")
+    print(len(files))
+    
+    with open(checkpoint_path, 'a') as checkpoint_file:
+        for i, file in enumerate(tqdm(files)):
+            if file in processed_files:
+                continue
+            save_path = file.replace(image_path, output_path).replace(".jpg", ".npy")
+            Path("/".join(save_path.split("\\")[:-1])).mkdir(parents=True, exist_ok=True)
+            parse_face_img(file, save_path)
+            # Save to checkpoint
+            checkpoint_file.write(file + '\n')

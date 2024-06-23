@@ -2,6 +2,10 @@ import os.path
 import sys
 import argparse
 import shutil
+import torch
+
+import warnings
+warnings.filterwarnings("ignore", category=torch.serialization.SourceChangeWarning)
 
 parser = argparse.ArgumentParser("Preprocess YTF dataset")
 parser.add_argument("--data_dir", type=str)
@@ -22,15 +26,16 @@ if __name__ == '__main__':
     if not os.path.exists("logs"):
         os.mkdir("logs")
 
-    from util.face_sdk.face_crop import process_images as face_crop_process_images
-    face_crop_process_images(
-        os.path.join(args.data_dir, "frame_images_DB"),
-        os.path.join(args.data_dir, "crop_images_DB"),
-        args.max_workers,
-    )
+    # from util.face_sdk.face_crop import process_images as face_crop_process_images
+    # face_crop_process_images(
+    #     os.path.join(args.data_dir, "frame_images_DB"),
+    #     os.path.join(args.data_dir, "crop_images_DB"),
+    #     args.max_workers,
+    # )
 
     # Face parsing based on these cropped faces
     from util.face_sdk.face_parse import process_images as face_parse_process_images
+    print(args.data_dir)
     face_parse_process_images(
         os.path.join(args.data_dir, "crop_images_DB"),
         os.path.join(args.data_dir, "face_parsing_images_DB")

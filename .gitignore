@@ -270,3 +270,6 @@ logs
 *.ckpt
 *.pt
 lightning_logs
+
+dataset/misc/youtube_face/data
+.vscode

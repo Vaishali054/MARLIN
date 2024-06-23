@@ -105,12 +105,13 @@ def process_videos(video_path, output_path, ext="mp4", max_workers=8):
 def process_images(image_path: str, output_path: str, max_workers: int = 8):
     Path(output_path).mkdir(parents=True, exist_ok=True)
     files = glob.glob(f"{image_path}/*/*/*.jpg")
+    print(len(files))
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         futures = []
 
         for file in tqdm(files):
             save_path = file.replace(image_path, output_path)
-            Path("/".join(save_path.split("/")[:-1])).mkdir(parents=True, exist_ok=True)
+            Path("/".join(save_path.split("\\")[:-1])).mkdir(parents=True, exist_ok=True)
             futures.append(executor.submit(crop_face_img, file, save_path))
 
         for future in tqdm(futures):
